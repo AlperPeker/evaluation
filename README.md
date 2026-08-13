@@ -124,5 +124,6 @@ cd benchmark
 ```
 
 Edit `run.py` to specify which benchmark phases you want to run.
+Also make sure to adjust `EXPERIMENTS` in benchmark runners (i.e. `build_performance/measure.py`).
 Results are written to `build_performance/{results,charts}/` and
 `pull_performance/{results,charts}/`. 

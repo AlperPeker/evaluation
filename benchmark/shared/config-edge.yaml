@@ -1,0 +1,22 @@
+registry: "131.159.25.169:5000"
+tdfs_home_dir: "/root/.2dfs"
+tmpdir: null
+data_volume: null
+hf_home: null
+tdfs_binary: "tdfs"
+
+build_cooldown: 5
+pull_cooldown: 5
+
+# build_performance/measure.py
+build_n_runs: 3
+build_with_resource: true
+
+# build_performance/measure_rebuild.py
+rebuild_n_runs: 3
+
+# pull_performance/measure.py
+pull_n_runs: 3
+
+# pull_performance/measure_refresh.py
+refresh_n_runs: 3

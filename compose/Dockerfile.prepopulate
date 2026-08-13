@@ -1,0 +1,48 @@
+FROM debian:bullseye-slim
+
+# base deps
+RUN apt-get update -y && apt-get install -y \
+    ca-certificates \
+    curl \
+    wget \
+    git \
+    build-essential \
+    libseccomp-dev \
+    pkg-config \
+  && rm -rf /var/lib/apt/lists/*
+
+# Go
+RUN wget -O go.tar.gz https://golang.org/dl/go1.24.0.linux-amd64.tar.gz && \
+    tar -C /usr/local -xzf go.tar.gz && rm go.tar.gz
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# containerd
+ARG CONTAINERD_VERSION=v2.1.5
+RUN cd /tmp && \
+    git clone -b ${CONTAINERD_VERSION} --depth 1 https://github.com/containerd/containerd && \
+    cd containerd && \
+    make && make install PREFIX=/usr/local
+
+# ctr-remote
+RUN cd /tmp && \
+    git clone https://github.com/containerd/stargz-snapshotter.git && \
+    cd stargz-snapshotter && \
+    make ctr-remote && \
+    cp out/ctr-remote /usr/local/bin/
+
+# 2dfs
+RUN curl -sfL 2dfs.github.io/install-tdfs.sh | sh -
+RUN mv tdfs /usr/local/bin/tdfs
+RUN mkdir /2dfs
+COPY 2dfs/ /2dfs/
+
+# containerd config
+RUN mkdir -p /etc/containerd
+COPY containerd-config-prepopulate.toml /etc/containerd/config.toml
+
+# prepopulation script
+COPY prepopulate-2dfs.sh /prepopulate-registry.sh
+RUN chmod +x /prepopulate-registry.sh
+
+WORKDIR /workspace
+ENTRYPOINT ["/prepopulate-registry.sh"]

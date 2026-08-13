@@ -1,0 +1,23 @@
+noprefetch = true
+no_background_fetch = true
+disable_verification = true
+prefetch_async_size = 0
+log_file_access = false
+metrics_address = "127.0.0.1:8234"
+prefetch_timeout_sec = 120
+
+[resolver]
+request_timeout_sec = 120
+
+[[resolver.host."localhost:5000".mirrors]]
+host = "localhost:5000"
+insecure = true
+
+[[resolver.host."131.159.25.169:5000".mirrors]]
+host = "131.159.25.169:5000"
+insecure = true
+
+[fuse]
+passthrough = true
+merge_worker_count = 10
+merge_buffer_size = 419430400

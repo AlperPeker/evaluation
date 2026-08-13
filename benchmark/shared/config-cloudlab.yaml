@@ -1,0 +1,21 @@
+registry: "10.10.1.2:5000"
+tdfs_home_dir: "/mydata/.2dfs"
+tmpdir: "/mydata/tmp"
+data_volume: "/mydata"
+hf_home: "/mydata/huggingface"
+tdfs_binary: "tdfs"
+build_cooldown: 5
+pull_cooldown: 5
+
+# build_performance/measure.py
+build_n_runs: 3
+build_with_resource: true
+
+# build_performance/measure_rebuild.py
+rebuild_n_runs: 3
+
+# pull_performance/measure.py
+pull_n_runs: 3
+
+# pull_performance/measure_refresh.py
+refresh_n_runs: 3

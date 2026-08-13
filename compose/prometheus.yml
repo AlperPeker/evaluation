@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 3s
+
+scrape_configs:
+  - job_name: "stargz-snapshotter"
+    static_configs:
+      - targets: ["benchmark:9333"]
+
+  - job_name: "containerd"
+    static_configs:
+      - targets: ["benchmark:9334"]
+    metrics_path: /v1/metrics

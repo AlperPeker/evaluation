@@ -1,0 +1,76 @@
+version: "3.8"
+
+services:
+  # registry:
+  #   image: registry:2
+  #   container_name: registry
+  #   volumes:
+  #     - registry-data:/var/lib/registry
+  #   ports:
+  #     - "5000:5000"
+  
+  registry:
+    image: tdfs-registry-1
+    environment:
+      # https://github.com/distribution/distribution/commit/0966daece76ee87454687d9e1a99ad27bb50701a
+      OTEL_TRACES_EXPORTER: "none"
+    container_name: registry
+    volumes:
+      - 2dfs-registry-data:/var/lib/registry
+    ports:
+      - "5000:5000"
+
+  # prepopulate:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prepopulate
+  #   privileged: true
+  #   image: prepopulate-registry:local
+  #   container_name: prepopulate-registry
+  #   depends_on:
+  #     - registry
+
+  benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: stargz-eval
+    container_name: stargz-eval
+    privileged: true
+
+    devices:
+      - /dev/fuse
+
+    volumes:
+      - containerd-data:/var/lib/containerd
+      - stargz-data:/var/lib/containerd-stargz-grpc
+      - benchmark-tmp:/tmp
+
+    # depends_on:
+    #   - prepopulate
+    
+    expose:
+      - "9333"
+      - "9334"
+
+    command: ["/bin/sh", "-c", "/start.sh && sleep infinity"]
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+  #     - prometheus-data:/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #     - "--storage.tsdb.retention.size=1GB"
+  #   ports:
+  #     - "9090:9090"
+
+volumes:
+  containerd-data:
+  stargz-data:
+  # registry-data:
+  2dfs-registry-data:
+  # prometheus-data:
+  benchmark-tmp:

@@ -259,7 +259,7 @@ def prepare_local_registry(
     esgz_name, esgz_ver = _parse_name_tag(esgz_tag, registry_url)
     zstd_name, zstd_ver = _parse_name_tag(zstd_tag, registry_url)
 
-    log.info(f"Checking if base images exist in registry...")
+    log.info("Checking if base images exist in registry...")
     if (
         _image_exists_in_registry(registry_url, plain_name, plain_ver)
         and _image_exists_in_registry(registry_url, esgz_name, esgz_ver)

@@ -1,3 +1,10 @@
+"""Benchmark entry point.
+
+Which phases run is selected by commenting/uncommenting the calls in
+run_phases(); which workloads each phase measures is selected in
+the EXPERIMENTS list of the corresponding measure script.
+"""
+
 import os
 import socket
 import time

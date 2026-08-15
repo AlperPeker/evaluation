@@ -1,6 +1,7 @@
 huggingface_hub
 matplotlib
+numpy
 psutil
 python-dotenv
-requests
+PyYAML
 tomlkit

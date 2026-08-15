@@ -194,7 +194,7 @@ def _measure_config_option(
         if span:
             log.result(f"  prefetch span: {span[0] - pull_start_s:.2f}s → {span[1] - pull_start_s:.2f}s ({len(events)} layers)")
         else:
-            log.result(f"  prefetch span: none")
+            log.result("  prefetch span: none")
 
         raw_entries = collect_stargz_journal_since(pull_start_s)
         dl_span = bg_fetch_spans(raw_entries)

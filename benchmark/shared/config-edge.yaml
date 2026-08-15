@@ -1,3 +1,4 @@
+# Environment config for the edge node. See config-cloudlab.yaml for more details
 registry: "131.159.25.169:5000"
 tdfs_home_dir: "/root/.2dfs"
 tmpdir: null

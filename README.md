@@ -80,18 +80,11 @@ echo "HF_TOKEN=..." > ./benchmark/.env
 cp /mydata/evaluation/benchmark/shared/config-cloudlab.yaml /mydata/evaluation/benchmark/shared/config.yaml 
 ```
 
-- clone split_llm (needs an ssh key)
+- clone split_llm
 
 ```bash
-cat > ~/.ssh/id_ed25519 <<'EOF'
------BEGIN OPENSSH PRIVATE KEY-----
-...
------END OPENSSH PRIVATE KEY-----
-EOF
-
-chmod 600 ~/.ssh/id_ed25519
 cd /mydata/
-git clone git@gitlab.lrz.de:distributed-ml/split-llm-simple.git
+git clone git@github.com:mitrafsnap/evaluation.git
 ```
 
 - install dependencies, use specified venv name as it is later used in the benchmark 

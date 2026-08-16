@@ -1,0 +1,9 @@
+torch
+transformers
+safetensors
+tqdm
+graphviz
+tiktoken
+sentencepiece
+protobuf
+python-dotenv

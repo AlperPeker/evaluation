@@ -1,6 +1,6 @@
 # Split LLM Simple
 
-Use `split_llms.sh` to split a large language model into smaller parts. List the models from Hugging Face there.
+Use `split_llms.sh` to split a large language model into smaller parts.
 
 # Prerequisites
 

@@ -1,4 +1,4 @@
-"""Wrapper around ../split-llm-simple/split_llm.py.
+"""Wrapper around split-llm/split_llm.py.
 
 Flow:
   1. run_split_llm(model)              — run split_llm.py with defaults via its own venv; cache by model.
@@ -17,7 +17,7 @@ from shared import fs, log
 from shared.config import load_config
 
 _SPLIT_REPO = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "..", "split-llm-simple")
+    os.path.join(os.path.dirname(__file__), "..", "..", "..", "split-llm")
 )
 
 
@@ -30,7 +30,7 @@ def split_llm_slug(model: str) -> str:
 
 
 def run_split_llm(model: str) -> str:
-    """Run ../split-llm-simple/split_llm.py with default args, using that
+    """Run split-llm/split_llm.py with default args, using that
     repo's own .venv. Caches via manifest.json: re-runs only if the model
     changed (defaults are fixed).
 
@@ -58,7 +58,7 @@ def run_split_llm(model: str) -> str:
     venv_py = os.path.join(_SPLIT_REPO, ".venv-split-llm/bin/python")
     script = os.path.join(_SPLIT_REPO, "split_llm.py")
     if not os.path.exists(venv_py):
-        raise RuntimeError(f"split-llm-simple venv not found at {venv_py}")
+        raise RuntimeError(f"split-llm venv not found at {venv_py}")
 
     cmd = [venv_py, script, "--model", model]
     env = os.environ.copy()

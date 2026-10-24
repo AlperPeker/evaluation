@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euox pipefail
 
-REPO_URL="https://github.com/mitrafsnap/stargz-snapshotter.git"
+REPO_URL="https://github.com/mitrafsnap/snapshotter.git"
 REPO_DIR="/tmp/stargz-snapshotter"
 
 BIN_DIR="/usr/local/bin"

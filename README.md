@@ -1,29 +1,52 @@
-# Benchmark setup
+# MitraFSnap evaluation
 
-The benchmark runs on two cloudlab `c6525-25g` nodes ([spec](https://www.utah.cloudlab.us/portal/show-nodetype.php?type=c6525-25g&_gl=1*wfe0yn*_ga*MTg1OTgyNjU4MNzcxNDE4OTE3*_ga_6W2Y02FJX6*czE3NzM4NTAzNzgkbzcyJGcwJHQxNzczODUwNDIwJGoxOCRsMCRoMA)):
-a registry node, and a combined builder/client node. This setup can also run on arbitrary server hardware. However, it is important to make sure that root folder `/mydata` exists.
+This repository contains the benchmark suite we use to compare MitraFSnap with Docker,
+eStargz and 2DFS. It measures how long each method takes to build an image, to pull it and
+start a container, and to apply an update to a running service. The workloads are large
+language models and a video analytics bundle with several vision models.
 
-## Cloudlab guide
+The suite uses the MitraFSnap [builder](https://github.com/mitrafsnap/builder),
+[registry](https://github.com/mitrafsnap/registry) and
+[snapshotter](https://github.com/mitrafsnap/snapshotter).
+
+## Layout
+
+```
+benchmark/     build, pull and update experiments, shared helpers and configs
+node-setup/    scripts that prepare the registry node and the client/builder node
+split-llm/     splits an LLM checkpoint into separately packaged parts
+util/          helpers to apply configs, prune caches, reset the registry and fetch model splits
+docs/          screenshots for the CloudLab guide
+```
+
+## Benchmark setup
+
+The benchmark runs on two CloudLab `c6525-25g` nodes
+([spec](https://www.utah.cloudlab.us/portal/show-nodetype.php?type=c6525-25g)). One node
+runs the registry, and the other runs both the builder and the client. Other servers work
+as well, as long as the root folder `/mydata` exists.
+
+## CloudLab guide
 - go to experiments -> start an experiment
 - pick a profile. In general profile doesn't matter because the hardware is defined separately. We use `small-lan` in our experiments.
 
 ![first step](docs/cloudlab-first-step.png)
 
 - specify node type, OS, etc
-- important to select "temp filesystem max space". In this case temporaray filesystem size doesn't matter as Cloudlab will allocate all available storage on that node
+- important to select "temp filesystem max space". In this case temporary filesystem size doesn't matter as CloudLab will allocate all available storage on that node
 
 ![second step](docs/cloudlab-second-step.png)
 
 ## About `/mydata`
 
-Cloudlab root disk is too small for benchmark artifacts, so the benchmark lives on the `/mydata`
-mount point allocated in the cloudlab profile. Cloudlab can allocate up to 1TB into the mount point of user's choice.
+The CloudLab root disk is too small for benchmark artifacts, so the benchmark lives on the `/mydata`
+mount point allocated in the CloudLab profile. CloudLab can allocate up to 1TB into the mount point of user's choice.
 
 - `/var/lib/containerd` and `/var/lib/containerd-stargz-grpc` are symlinked into `/mydata`
 - `TMPDIR=/mydata/tmp`, buildkit root `/mydata/buildkit`
 - 2dfs home dir - `/mydata/.2dfs`, `HF_HOME=/mydata/huggingface`
 - registry storage in `/mydata/2dfs-registry-data`
-- both repos in `/mydata/evaluation` and `/mydata/split-llm-simple`
+- this repository in `/mydata/evaluation`
 
 ## Setup steps
 
@@ -61,7 +84,7 @@ sudo ./node-setup/install-hwe-kernel.sh
 
 ```bash
 cd /mydata/evaluation/node-setup
-sudo ./combined-node-setup.sh 10.10.1.2 https://github.com/mitrafsnap/stargz-snapshotter.git
+sudo ./combined-node-setup.sh 10.10.1.2 https://github.com/mitrafsnap/snapshotter.git
 ```
 
 - env setup
@@ -80,17 +103,10 @@ echo "HF_TOKEN=..." > ./benchmark/.env
 cp /mydata/evaluation/benchmark/shared/config-cloudlab.yaml /mydata/evaluation/benchmark/shared/config.yaml 
 ```
 
-- clone split_llm
+- install the split-llm dependencies, use the specified venv name as it is later used in the benchmark 
 
 ```bash
-cd /mydata/
-git clone git@github.com:mitrafsnap/evaluation.git
-```
-
-- install dependencies, use specified venv name as it is later used in the benchmark 
-
-```bash
-cd /mydata/split-llm-simple
+cd /mydata/evaluation/split-llm
 sudo apt install -y graphviz
 python3 -m venv .venv-split-llm
 source .venv-split-llm/bin/activate

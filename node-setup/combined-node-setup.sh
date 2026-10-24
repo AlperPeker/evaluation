@@ -8,7 +8,7 @@ set -euox pipefail
 #
 # Usage: sudo ./combined-node-setup.sh <REGISTRY_IP> [STARGZ_REPO_URL]
 # Example: sudo ./combined-node-setup.sh 10.10.1.2
-# Example: sudo ./combined-node-setup.sh 10.10.1.2 https://github.com/mitrafsnap/stargz-snapshotter.git
+# Example: sudo ./combined-node-setup.sh 10.10.1.2 https://github.com/mitrafsnap/snapshotter.git
 # -------------------------------------------------------------------
 
 if [[ $# -lt 1 || $# -gt 2 ]]; then
@@ -139,7 +139,7 @@ export GOTOOLCHAIN=local
 
 BUILDER_DIR="/opt/2dfs-builder"
 rm -rf "$BUILDER_DIR"
-git clone https://github.com/mitrafsnap/2dfs-builder.git "$BUILDER_DIR"
+git clone https://github.com/mitrafsnap/builder.git "$BUILDER_DIR"
 cd "$BUILDER_DIR"
 bash install.sh
 

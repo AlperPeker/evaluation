@@ -1,13 +1,26 @@
+<p align="center">
+  <a href="https://mitrafsnap.github.io"><img src="https://img.shields.io/badge/Project%20page-mitrafsnap.github.io-cc3333" alt="Project page"></a>
+  <a href="https://github.com/mitrafsnap/demo"><img src="https://img.shields.io/badge/Live%20demo-mitrafsnap%2Fdemo-cc3333" alt="Live demo"></a>
+</p>
+
 # MitraFSnap evaluation
+
+> Part of **MitraFSnap**, Build Less, Pull Less, Restart Never: Fast Container Image
+> Distribution and In-Place Updates. The paper is under review.
+> [Project page, videos and results](https://mitrafsnap.github.io)
 
 This repository contains the benchmark suite we use to compare MitraFSnap with Docker,
 eStargz and 2DFS. It measures how long each method takes to build an image, to pull it and
 start a container, and to apply an update to a running service. The workloads are large
 language models and a video analytics bundle with several vision models.
 
-The suite uses the MitraFSnap [builder](https://github.com/mitrafsnap/builder),
-[registry](https://github.com/mitrafsnap/registry) and
-[snapshotter](https://github.com/mitrafsnap/snapshotter).
+| Repository | Role in MitraFSnap |
+|---|---|
+| [builder](https://github.com/mitrafsnap/builder) | builds independent, lazy loadable allotments and their chunk indexes |
+| [registry](https://github.com/mitrafsnap/registry) | turns a partition selection into prefetch hints over the complete image |
+| [snapshotter](https://github.com/mitrafsnap/snapshotter) | lazy pulling and refresh of running containers |
+| [demo](https://github.com/mitrafsnap/demo) | live demo that compares Docker, eStargz, 2DFS and MitraFSnap |
+| **evaluation** (this repository) | build, pull and update benchmarks |
 
 ## Layout
 

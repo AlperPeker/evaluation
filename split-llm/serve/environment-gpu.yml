@@ -1,0 +1,22 @@
+name: splitllm-gpu
+channels:
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.11
+  - pytorch=2.5.1
+  - pytorch-cuda=12.4
+  - mkl=2023.1.0
+  - numpy
+  - requests
+  - tqdm
+  - pip
+  - pip:
+      - accelerate
+      - aiortc
+      - pillow
+      - protobuf
+      - safetensors
+      - sentencepiece
+      - transformers

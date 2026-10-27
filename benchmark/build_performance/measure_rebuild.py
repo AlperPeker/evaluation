@@ -10,8 +10,9 @@ from build_performance.paths import (
 )
 from shared.config import load_config
 from shared.artifacts import mutate_safetensors, snapshot_artifacts, clear_artifacts
-from shared.registry import prepare_local_registry, registry
-from shared.services import ensure_buildkit, prune_buildkit, clear_2dfs_cache
+from shared.registry import prepare_plain_base_image, registry
+#from shared.registry import prepare_local_registry, registry
+#from shared.services import ensure_buildkit, prune_buildkit, clear_2dfs_cache
 from shared.run_metadata import write_run_json
 from shared.packing import layers_for_percent
 from build_performance.rebuild_common import (
@@ -26,17 +27,17 @@ from build_performance.prepare import (
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 EXPERIMENTS = [
-    # ("openai-community/gpt2",        "docker.io/library/python:3.12-slim"),  # ~0.5GB     ~50 MB
+    ("openai-community/gpt2",        "docker.io/library/python:3.12-slim"),  # ~0.5GB     ~50 MB
     # ("Qwen/Qwen2-1.5B",              "docker.io/library/python:3.12-slim"),  # ~3.09 GB     ~3.4 GB
     # ("EleutherAI/pythia-1.4b", "docker.io/library/python:3.12-slim"),
     # ("openlm-research/open_llama_3b", "docker.io/library/python:3.12-slim"),    # ~6.0 GB     ~3.4 GB
     # ("Qwen/Qwen3.5-9B", "docker.io/ollama/ollama"),
-    ("google/gemma-4-31B", "docker.io/ollama/ollama"),
+    # ("google/gemma-4-31B", "docker.io/ollama/ollama"),
 ]
 CFG = load_config()
 VERBOSE = False
-MODES = ["2dfs", "2dfs-stargz", "2dfs-stargz-zstd", "stargz", "base"]
-LAYERS_MUTATED_PERCENTS = [25, 50, 75, 100]
+MODES = ["2dfs"]
+LAYERS_MUTATED_PERCENTS = [25]
 # v2:
 # - n_chunks_mutated -> n_layers_mutated
 # - mutation_pct -> layers_mutated_pct
@@ -132,9 +133,9 @@ def plot(results: list[RebuildRow], model: str, base_image: str, max_allowed_spl
 
 def main():
     log.set_verbose(VERBOSE)
-    ensure_buildkit()
-    prune_buildkit()
-    clear_2dfs_cache(CFG)
+    # ensure_buildkit()
+    # prune_buildkit()
+    # clear_2dfs_cache(CFG)
     execution_ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     run_started = datetime.now(timezone.utc)
 
@@ -143,7 +144,8 @@ def main():
     for model, base_image in EXPERIMENTS:
         chunks_dir, max_allowed_splits = prepare_model_splits(model)
         log.result(f"\n===== Experiment: {model} / {base_image} (max_allowed_splits={max_allowed_splits}) =====")
-        prepare_local_registry(base_image, registry(CFG))
+        # prepare_local_registry(base_image, registry(CFG))
+        prepare_plain_base_image(base_image, registry(CFG))
 
         methods = make_methods(MODES, CFG, base_image)
 

@@ -351,3 +351,48 @@ def prepare_local_registry(
     log.result(f"Base images ready: {plain_tag}, {esgz_tag}, {zstd_tag}")
 
     return esgz_tag
+
+def prepare_plain_base_image(
+    source_image: str,
+    registry_url: str,
+) -> str:
+    plain_tag = _local_plain_tag(source_image, registry_url)
+    name, tag = _parse_name_tag(plain_tag, registry_url)
+    plain_library_tag = f"{registry_url}/library/{name}:{tag}"
+
+    if (
+        _image_exists_in_registry(registry_url, name, tag)
+        and _image_exists_in_registry(registry_url, f"library/{name}", tag)
+    ):
+        log.info(f"Base image already exists: {plain_tag}")
+        return plain_tag
+
+    log.info(f"Pulling {source_image}...")
+    subprocess.run(
+        ["docker", "pull", "--platform", "linux/amd64", source_image],
+        check=True,
+    )
+
+    log.info(f"Tagging {plain_tag}...")
+    subprocess.run(
+        ["docker", "tag", source_image, plain_tag],
+        check=True,
+    )
+
+    log.info(f"Pushing {plain_tag}...")
+    subprocess.run(
+        ["docker", "push", plain_tag],
+        check=True,
+    )
+
+    log.info(f"Pushing library variant: {plain_library_tag}...")
+    subprocess.run(
+        ["docker", "tag", plain_tag, plain_library_tag],
+        check=True,
+    )
+    subprocess.run(
+        ["docker", "push", plain_library_tag],
+        check=True,
+    )
+
+    return plain_tag

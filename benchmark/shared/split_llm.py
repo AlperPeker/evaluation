@@ -16,10 +16,13 @@ import subprocess
 from shared import fs, log
 from shared.config import load_config
 
-_SPLIT_REPO = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "..", "..", "..", "split-llm")
-)
+# _SPLIT_REPO = os.path.normpath(
+#     os.path.join(os.path.dirname(__file__), "..", "..", "..", "split-llm")
+# )
 
+_SPLIT_REPO = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "split-llm")
+)
 
 def split_llm_slug(model: str) -> str:
     """Matches the slug used by split_llm.py for its output folder."""

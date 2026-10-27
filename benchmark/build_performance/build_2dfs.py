@@ -1,20 +1,30 @@
 import os
 import subprocess
 import time
+import shutil
 
+from pathlib import Path
 from shared import log
 from shared.build_result import BuildResult
 from shared.config import EnvConfig
 from shared.registry import plain_base_image, tdfs_cmd, registry
-from shared.services import clear_2dfs_cache
+#from shared.services import clear_2dfs_cache
 from shared.tdfs_parser import parse_tdfs_output
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def clear_cache(cfg: EnvConfig) -> None:
-    clear_2dfs_cache(cfg)
+# def clear_cache(cfg: EnvConfig) -> None:
+#     clear_2dfs_cache(cfg)
 
+def clear_cache(cfg: EnvConfig) -> None:
+    cache_root = Path.home() / ".2dfs"
+
+    for sub in ("blobs", "uncompressed-keys", "index"):
+        cache_dir = cache_root / sub
+
+        if cache_dir.is_dir() and not cache_dir.is_symlink():
+            shutil.rmtree(cache_dir)
 
 def build_only(n: int, cfg: EnvConfig, source_image: str = "") -> BuildResult:
     target = f"{registry(cfg)}/build-perf:{n}"
@@ -22,7 +32,9 @@ def build_only(n: int, cfg: EnvConfig, source_image: str = "") -> BuildResult:
         "build",
         "--platforms", "linux/amd64",
         "--force-http",
-        "--compression-level", "1",
+        "--remote-cache-registry", "localhost:5000",
+        "--remote-cache-repository", "2dfs/cache-evaluation-gpt2",
+        "--remote-cache-insecure",
         "-f", "2dfs.json",
         plain_base_image(source_image, cfg),
         target,
